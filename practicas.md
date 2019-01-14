@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Practicas
-permalink: /practicas-iaw/
+title: Operaciones
+permalink: /operaciones-iaw/
 ---
 <ul class="post-list">
     {% for post in site.categories.practicas %}
