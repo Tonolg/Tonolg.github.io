@@ -1,0 +1,71 @@
+---
+layout: post 
+tittle : "Practica 1 "
+date: 2019-01-14 12:09:53 +0000 
+categories: practicas
+---
+
+# practica-1-lamp
+
+1.Instalacion de composer.
+Abrimos la consola y escribimos estos comandos:
+```php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('SHA384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');" 
+```
+Despues vamos al directorio de phpmyadmin e instalamos el composer
+```
+cd phpmyadmin
+php ../composer.phar update --no-dev
+```
+Abrimos el composer.json y borramos las lineas mbstring
+Despues escribimos:
+```composer update --no-dev```
+Ahora clonaremos el repositorio de phpmyadmin y para ello escribimos:
+```git clone https://github.com/phpmyadmin/phpmyadmin.git```
+Moveremos la carpeta php a /var/www/html y cambiaremos los permisos
+```mv phpmyadmin /var/www/html
+chown www-data:www-data phpmyadmin/ -R
+```
+2.Instalacion de adminer.
+```Nos metemos en el directorio de html(cd /var/www/html) y escribimos:
+wget https://github.com/vrana/adminer/releases/download/v4.6.3/adminer-4.6.3.php
+```
+Ahora cambiaremos los permisos:
+```chown www-data:www-data phpmyadmin/ -R```
+3.Instalacion de GoAccess.
+Abrimos la consola y escribimos estos comandos:
+```echo "deb http://deb.goaccess.io/ $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list.d/goaccess.list
+wget -O - https://deb.goaccess.io/gnugpg.key | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install goaccess
+```
+4.Consultado los LOGS de GoAccess.
+Nos vamos a la carpeta de apache y escribimos estos comandos y asi podremos ver la informacion de logs e informacion de una pagina web:
+```cd /var/log/apache2/
+goaccess access.log -c
+Nos metemos en la carpeta html y creamos un directorio que se llame logs y le cambiamos los permisos:
+mkdir /var/www/html/logs
+chown www-data:www-data logs/ -R
+```
+Para ver la informacion de los logs nos metemos en la carpeta apache2 y escribimos:
+``` goaccess access.log -o /var/www/html/logs/index.html --log-format=COMBINED --real-time-html```
+5.Control de acceso a un directorio con .htaccess.
+En primer lugar creamos en html un directorio que se llame stats(el nombre es lo de menos).
+```mkdir /var/www/html/stats```
+Ejecutamos GoAccess:
+```sudo goaccess /var/log/apache2/access.log -o /var/www/html/logs/index.html --log-format=COMBINED --real-time-html```
+Creamos un archivo de contraseñas para el usuario enlazado al directorio stats:
+```sudo htpasswd -c /home/usuario/.htpasswd usuario```
+Ahora nos iremos a la siguiente ruta y utilizaremos el comando nano o vi para editar el fichero 000-default.conf
+```sudo nano /etc/apache2/sites-enabled/000-default.conf```
+    • Añadimos lo siguiente dentro de VirtualHost *.
+<Directory "/var/www/html/stats"> Options Indexes FollowsymLinks AllowOverride All Require all granted
+Ahora crearemos el archivo .htaccess en /var/www/html/stats
+```cd /var/www/html/stats
+sudo nano .htaccess
+```
+Dentro del archivo .htaccess escribimos esto:
+```AuthType Basic AuthName "Restricted Content" AuthUserFile /home/usuario/.htpasswd Require valid-user```
+
