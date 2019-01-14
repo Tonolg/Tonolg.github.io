@@ -4,4 +4,4 @@ title: desarrollo
 permalink: /desarrollo/
 ---
 
-# php
+# info
