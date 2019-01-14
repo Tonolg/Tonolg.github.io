@@ -1,0 +1,68 @@
+---
+layout: post 
+tittle : "Practica 2 "
+date: 2019-01-14 12:17:53 +0000 
+categories: practicas
+---
+# practica02-LAMP
+
+1. Primero hacemos un archivo `Vagrantfile` dentro de la carpeta practica01,lo abrimos con el code y dejamos el archivo de dentro así: 
+
+```
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "private_network", ip: "192.168.33.10" 
+  config.vm.provision "shell", path: "script.sh"
+     
+end
+```
+
+2. Hacemos el `script.sh` dentro de la misma carpeta. Nos vamos a consola, ejecutamos el comando `vagrant up` y luego `vagrant ssh` para comprobar que funciona, luego nos salimos de la máquina con `exit` o `logout`, y ejecutamos el comando `vagrant provision`, se ejecutará el archivo `script.sh` que dentro tendrá que estar de la siguiente manera:
+
+```bash
+apt-get update
+```
+-instalamos apache
+```
+apt-get install -y apache2
+apt-get install -y php libapache2-mod-php php-mysql
+```
+-copiamos el index en la carpeta de html
+```
+cp /vagrant/index.php /var/www/html
+
+apt-get install -y debconf-utils
+```
+-seleccionamos la contraseÃ±a para el usuario root:
+```DB_ROOT_PASSWD=123456
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_ROOT_PASSWD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_ROOT_PASSWD"
+```
+-instalamos mysql
+```apt-get install -y mysql-server
+```
+-Clonamos repositorio de la apicacion web
+```apt-get install -y git
+cd /tmp
+git clone https://github.com/josejuansanchez/iaw-practica-lamp.git
+```
+-movemos la carpeta src de iaw-practica-lamp en la carpeta html.
+```cp /tmp/iaw-practica-lamp/src/. /var/www/html -R
+```
+-entramos a la carpeta de la web y le cambiamos los permisos
+```
+cd /var/www/html 
+chown www-data:www-data * -R
+```
+-Eliminamos el archivo index.html, para que nos muestre el index.php
+```
+rm /var/www/html/index.html 
+```
+-Ejecutar script que hay dentro de la maquina db
+```
+cd /tmp/iaw-practica-lamp/db
+```
+-con esto entramos en mysql la contraseña seria la puesta arriba.
+```
+mysql -u root -p$DB_ROOT_PASSWD < database.sql
+```
