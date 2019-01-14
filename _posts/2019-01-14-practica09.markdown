@@ -13,7 +13,7 @@ categories: practicas
 
   apt-get install -y git
 
- # instalamos el ruby. 
+# instalamos el ruby. 
 
   apt-get install -y ruby-bundler
 
@@ -22,13 +22,12 @@ categories: practicas
   gem install nokogiri
 
   cd /vagrant
-
-  # para bajar niveles de clone 1,2,3,4,5
+# para bajar niveles de clone 1,2,3,4,5
 
   git clone https://github.com/wpscanteam/wpscan --depth 1
 
-  # nos metemos en la carpeta wpscan y con wpscan --url + link para escanear la pagina.
+# nos metemos en la carpeta wpscan y con wpscan --url + link para escanear la pagina.
 
   cd wpscan/
-  
+
   bundle install && rake install
