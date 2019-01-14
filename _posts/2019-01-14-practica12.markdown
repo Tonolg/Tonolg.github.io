@@ -35,7 +35,7 @@ y dentro en la practica 12 abrimos modulo de drupal bitnami.
 
 ```wget https://bitnami.com/redirect/to/374318/bitnami-drupal-8.6.4-0-linuxx64-installer.run```
 
-5. Escribimos este comando para cambiar los permisos:
+5.Escribimos este comando para cambiar los permisos:
 
 ```chmod +x bitnami-wordpress-5.0-1-linux-x64-installer.run```
 
