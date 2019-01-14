@@ -1,0 +1,54 @@
+---
+layout: post 
+tittle : "Practica 12 "
+date: 2019-01-14 12:27:53 +0000 
+categories: practicas
+---
+
+# practica-12
+
+1.Seleccionamos INSTANCES y alli buscamos ubuntu , escogemos el primer
+ubuntu 18.04.
+
+2.Configuramos la maquina y añadimos los puertos 80(http), 443(https) y
+22(ssh).
+
+3.Despues, generamos un key para poder conectar a la maquina por ssh.La
+guardamos dentro de una carpeta. Practica 11.
+
+3.1. Ahora nos vamos a la carpeta donde hemos guardado el key y
+escribimos:
+
+```chmod 400 ubuntu + nombredelkey.pem```
+
+3.2.Ponemos en consola ssh -i "grupal.pem" ubuntu@ec2-54-208-59-
+84.compute-1.amazonaws.com
+
+3.2 Una vez dentro de la maquina escribimos sudo su para tener acceso
+como superusuario.
+
+4.Una vez que conectemos escribiremos este comando:
+
+dentro de la pagina de https://josejuansanchez.org/iaw/practica12/index.html
+
+y dentro en la practica 12 abrimos modulo de drupal bitnami.
+
+```wget https://bitnami.com/redirect/to/374318/bitnami-drupal-8.6.4-0-linuxx64-installer.run```
+
+5. Escribimos este comando para cambiar los permisos:
+
+```chmod +x bitnami-wordpress-5.0-1-linux-x64-installer.run```
+
+6.Ahora ejecutamos el instalador con este comando:
+
+```./bitnami-drupal...```
+
+Empezará a instalarse el drupal automáticamente en nuestra maquina.
+
+6.1. Ahora configuramos nuestro nombre, usuario, correo etc.
+
+7.Ahora nos vamos a amazon y en instances y seleccionamos la ip de
+
+nuestra maquina.
+
+8.En el navegador y ponemos la ip publica de la maquina hecha.

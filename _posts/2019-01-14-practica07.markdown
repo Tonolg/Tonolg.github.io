@@ -1,0 +1,101 @@
+---
+layout: post 
+tittle : "Practica 7 "
+date: 2019-01-14 12:23:53 +0000 
+categories: practicas
+---
+
+# practica07
+```
+apt-get update
+```
+
+-instalacion Apache HTTP Server
+```apt-get install -y apache2
+apt-get install -y php libapache2-mod-php php-mysql
+sudo /etc/init.d/apache2 restart
+```
+
+-Clonar repositorio de la apicacion web
+```cd /tmp
+apt-get install -y unzip
+rm -rf latest.zip
+rm -rf wordpress
+wget https://wordpress.org/latest.zip
+unzip -u latest.zip
+cd wordpress
+cp wp-config-sample.php wp-config.php
+```
+-creamos variables pra aceder a la base de datos
+```DB_NAME=wordpress_db
+DB_USER=wordpress_user
+DB_PASSWORD=wordpress_password
+DB_HOST=192.168.33.13
+
+sed -i "s/database_name_here/$DB_NAME/" wp-config.php
+sed -i "s/username_here/$DB_USER/" wp-config.php
+sed -i "s/password_here/$DB_PASSWORD/" wp-config.php
+sed -i "s/localhost/$DB_HOST/" wp-config.php
+```
+-movemos los archivos web del repositorio a la carpeta html para que la muestre al web y le cambiamos los permisos
+```
+cp /tmp/wordpress/. /var/www/html -R
+
+
+cd /var/www/html
+
+#cambiamos los permisos.
+
+chown www-data:www-data * -R
+```
+-Eliminamos el index.html para que nos muestre el index.php
+
+```
+apt-get update
+apt-get install -y debconf-utils
+```
+-seleccionamos la contraseña para root
+```DB_ROOT_PASSWD=123456
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_ROOT_PASSWD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_ROOT_PASSWD"
+#instalamos mysql
+apt-get install -y mysql-server
+```
+-Esto entra en el achivo mysqld.cnf y reemplaza 127.0.0.1 por 0.0.0.0 para que todos se puedan conectar a esta base de datos
+```sed -i 's/127.0.0.1/0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+/etc/init.d/mysql restart
+
+mysql -uroot -p$DB_ROOT_PASSWD <<< "GRANT ALL PRIVILEGES ON *.* TO root@'%' IDENTIFIED BY '$DB_ROOT_PASSWD';"
+mysql -uroot -p$DB_ROOT_PASSWD <<< "FLUSH PRIVILEGES;"
+ 
+
+DB_NAME=wordpress_db
+DB_USER=wordpress_user
+DB_PASSWORD=wordpress_password
+
+mysql -uroot -p$DB_ROOT_PASSWD <<< "DROP DATABASE IF EXISTS $DB_NAME;"
+mysql -uroot -p$DB_ROOT_PASSWD <<< "CREATE DATABASE $DB_NAME CHARACTER SET utf8;"
+mysql -uroot -p$DB_ROOT_PASSWD <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@'%' IDENTIFIED BY '$DB_PASSWORD';"
+mysql -uroot -p$DB_ROOT_PASSWD <<< "FLUSH PRIVILEGES;" 
+#Instalamos Apache
+apt-get install -y apache2
+apt-get install -y php libapache2-mod-php php-mysql
+```
+-Activación de los módulos necesarios en Apache
+```a2enmod proxy deflate
+a2enmod proxy_http deflate
+a2enmod proxy_ajp deflate
+a2enmod rewrite deflate
+a2enmod deflate deflate
+a2enmod headers deflate
+a2enmod proxy_balancer deflate
+a2enmod proxy_connect deflate
+a2enmod proxy_html deflate
+a2enmod lbmethod_byrequests deflate
+```
+-Borramos el default.conf y copiamos el nuestro con los parametros deseados
+```
+rm -f /etc/apache2/sites-enabled/000-default.conf
+sudo cp /vagrant/config/000-default.conf /etc/apache2/sites-enabled 
+sudo /etc/init.d/apache2 restart
+```

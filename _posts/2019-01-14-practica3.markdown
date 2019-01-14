@@ -1,0 +1,94 @@
+---
+layout: post 
+tittle : "Practica 3 "
+date: 2019-01-14 12:20:53 +0000 
+categories: practicas
+---
+# practica03-lamp
+
+En la maquina web hacemos esto:
+
+```bash
+#actualizamos y instalamos.
+
+apt-get update
+
+apt-get install -y apache2
+
+apt-get install -y php libapache2-mod-php php-mysql
+
+sudo /etc/init.d/apache2 restart
+
+apt-get install -y git
+cd /tmp
+
+rm -rf iaw-practica-lamp
+
+#clonamos repositorio de la pagina web
+
+git clone https://github.com/josejuansanchez/iaw-practica-lamp.git
+
+#copiamos src en html y le cambiamos los permisos.
+
+cp /tmp/iaw-practica-lamp/src/. /var/www/html -R
+#ponemos la ip 192.168.33.11 en el archivo de configuracion.
+
+sed -i  's/localhost/192.168.33.11/' /var/www/html/config.php
+
+#cambiamos los permisos con el comando chown.
+
+chown www-data:www-data /var/www/html -R
+
+#borramos el archivo index.html
+
+rm /var/www/html/index.html
+
+En la maquina db hacemos esto:
+
+apt-get update
+
+apt-get -y install debconf-utils
+
+#podemos cambiar la contraseña de por defecto root a 123456.
+
+DB_ROOT_PASSWD=123456
+
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_ROOT_PASSWD"
+
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_ROOT_PASSWD"
+#instalamos mysql-server
+
+apt-get install -y mysql-server
+
+#con esto se conecta automaticamente 
+
+mysql -u root mysql -p$DB_ROOT_PASSWD < /tmp/iaw-practica-lamp/
+
+#con el sed modificamos los archivos.
+
+sed -i 's/127.0.0.1/0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+/etc/init.d/mysql restart
+
+apt-get install -y git
+cd /tmp
+
+rm -rf iaw-practica-lamp
+
+#clonamos repositorio de la pagina web
+
+git clone https://github.com/josejuansanchez/iaw-practica-lamp
+#ejecutamos script de la base de datos.
+
+mysql -u root -p$DB_ROOT_PASSWD < /tmp/iaw-practica-lamp/db/database.sql
+```
+
+comandos como:
+
+vagrant ssh db nos conectamos a la maquina db y asi con la web.
+
+vagrant provision para que vuelva a leer el script creado.
+
+vagrant up levantamos las maquinas.
+
+vagrant global status miramos que maquinas estan apagadas y corriendo.
+

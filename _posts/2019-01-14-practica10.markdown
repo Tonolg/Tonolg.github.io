@@ -1,0 +1,24 @@
+---
+layout: post 
+tittle : "Practica 10 "
+date: 2019-01-14 12:25:53 +0000 
+categories: practicas
+---
+
+# practica-10-wp-amazon
+
+1.Dentro de amazon nos vamos a launch instances y ponemos Ubuntu 18.04  y le damos a select .
+2.Seleccionamos la opción free y le damos a next.
+
+3.La siguiente pestaña seria la configuración detallada del la maquina le damos a next.
+
+4.La siguiente pestaña es para añadir almacenamiento no tocamos nada y le damos a next.
+
+5.Elegimos los puertos en este caso el ssh (22),http(80),https(443).
+
+6.El siguiente paso elegimos si queremos usar una clave antigua o crear una clave para acceder a la maquina,en este caso elegimos a crear la key.
+
+7.Cuando al tengamos creada le damos a botón derecho conectar y le tendremos que dar permisos con chmod y luego usamos ssh.
+
+8.Con wget descargamos el modulo de wordpress desde el launch instances, wordpress en el buscador y en la barra lateral le damos AWS Marketplace y elegimos wordpress certified by bitnami.
+
